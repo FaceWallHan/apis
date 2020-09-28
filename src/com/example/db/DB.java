@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
-* Create by 张瀛煜
+* Create by 寮犵�涚厹
 * On Sep 28, 2020 9:08:49 AM
 */
 public class DB {
@@ -28,7 +28,7 @@ public class DB {
 			Class.forName(className);
 		} catch (ClassNotFoundException e) {
 			// TODO: handle exception
-			System.out.println("连接数据库失败");
+			System.out.println("杩炴帴鏁版嵁搴撳け璐�");
 			e.printStackTrace();
 		}
 	}
@@ -40,7 +40,7 @@ public class DB {
 			con = DriverManager.getConnection(url, username, password);
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("连接数据库失败");
+			System.out.println("杩炴帴鏁版嵁搴撳け璐�");
 			e.printStackTrace();
 		}
 	}
@@ -51,7 +51,7 @@ public class DB {
 			stm = con.createStatement();
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("连接数据库失败");
+			System.out.println("杩炴帴鏁版嵁搴撳け璐�");
 			e.printStackTrace();
 		}
 	}
@@ -62,7 +62,7 @@ public class DB {
 		try {
 			rs = stm.executeQuery(sql);
 		} catch (Exception e) {
-			System.out.println("连接数据库失败");
+			System.out.println("杩炴帴鏁版嵁搴撳け璐�");
 			e.printStackTrace();
 		}
 	}
@@ -79,7 +79,7 @@ public class DB {
 			if (con != null)
 				con.close();
 		} catch (Exception e) {
-			System.out.println("连接数据库失败");
+			System.out.println("杩炴帴鏁版嵁搴撳け璐�");
 			e.printStackTrace();
 		}
 	}
@@ -90,7 +90,7 @@ public class DB {
 			try {
 				i = stm.executeUpdate(sql);
 			} catch (Exception e) {
-				System.out.println("更新数据库失败！");
+				System.out.println("鏇存柊鏁版嵁搴撳け璐ワ紒");
 				e.printStackTrace();
 			} finally {
 				closed();
