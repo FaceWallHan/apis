@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +20,24 @@ import com.example.db.MyUtil;
 import net.sf.json.JSONObject;
 
 /**
- * Servlet implementation class set_car_move
+ * Servlet implementation class user_login
  */
-@WebServlet("/set_car_move")
-public class set_car_move extends HttpServlet {
+@WebServlet("/user_login")
+public class user_login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public user_login() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -39,8 +46,7 @@ public class set_car_move extends HttpServlet {
 		String json = reader.readLine();
 		JSONObject jsonobject = JSONObject.fromObject(json);
 		String messageid = jsonobject.getString("UserName");
-		String carId = jsonobject.getString("CarId");
-		String carAction = jsonobject.getString("CarAction");
+		String password = jsonobject.getString("UserPwd");
 		String urlString = request.getRequestURL().toString();
 		urlString = urlString.substring(0, urlString.lastIndexOf("/"));
 		System.out.println(urlString);
@@ -50,24 +56,34 @@ public class set_car_move extends HttpServlet {
 		reader.close();
 		DB db = new DB();
 		JSONObject jsonObject2 = new JSONObject();
-		int row = db.update("update car_move set CarAction='" + carAction + "' where CarId='" + carId + "'");
-		if (row == 1) {
-			jsonObject2.put("RESULT", "S");
-			jsonObject2.put("ERRMSG", "成功");
-		} else {
+		db.getRs("select * from user_login where username = '" + messageid + "' and password = '"+password+"'");
+		ResultSet set = db.getRs();
+		try {
+			if (set != null&&set.next()) {
+				jsonObject2.put("RESULT", "S");
+				jsonObject2.put("ERRMSG", "成功");		
+				jsonObject2.put("UserRole", set.getString(3));
+			} else {
+				jsonObject2.put("RESULT", "F");
+				jsonObject2.put("ERRMSG", "失败");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			jsonObject2.clear();
 			jsonObject2.put("RESULT", "F");
 			jsonObject2.put("ERRMSG", "失败");
+			e.printStackTrace();
+		}finally {
+			db.closed();
+			PrintWriter owtPrintWriter = response.getWriter();
+			owtPrintWriter.write(jsonObject2.toString());
 		}
-		PrintWriter owtPrintWriter = response.getWriter();
-		owtPrintWriter.write(jsonObject2.toString());
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

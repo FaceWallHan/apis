@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,18 +18,16 @@ import com.example.db.MyUtil;
 import net.sf.json.JSONObject;
 
 /**
- * Servlet implementation class set_car_move
+ * Servlet implementation class get_car_account_balance
  */
-@WebServlet("/set_car_move")
-public class set_car_move extends HttpServlet {
+@WebServlet("/get_car_account_balance")
+public class get_car_account_balance extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -40,7 +37,6 @@ public class set_car_move extends HttpServlet {
 		JSONObject jsonobject = JSONObject.fromObject(json);
 		String messageid = jsonobject.getString("UserName");
 		String carId = jsonobject.getString("CarId");
-		String carAction = jsonobject.getString("CarAction");
 		String urlString = request.getRequestURL().toString();
 		urlString = urlString.substring(0, urlString.lastIndexOf("/"));
 		System.out.println(urlString);
@@ -50,24 +46,35 @@ public class set_car_move extends HttpServlet {
 		reader.close();
 		DB db = new DB();
 		JSONObject jsonObject2 = new JSONObject();
-		int row = db.update("update car_move set CarAction='" + carAction + "' where CarId='" + carId + "'");
-		if (row == 1) {
-			jsonObject2.put("RESULT", "S");
-			jsonObject2.put("ERRMSG", "成功");
-		} else {
+		db.getRs("select * from t_vehicle where number = '" + carId + "'");
+		ResultSet set = db.getRs();
+		try {
+			if (set != null&&set.next()) {
+				jsonObject2.put("RESULT", "S");
+				jsonObject2.put("ERRMSG", "成功");
+				jsonObject2.put("Balance", set.getInt(4));
+			} else {
+				jsonObject2.put("RESULT", "F");
+				jsonObject2.put("ERRMSG", "失败");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			jsonObject2.clear();
 			jsonObject2.put("RESULT", "F");
 			jsonObject2.put("ERRMSG", "失败");
+			e.printStackTrace();
+		}finally {
+			db.closed();
+			PrintWriter owtPrintWriter = response.getWriter();
+			owtPrintWriter.write(jsonObject2.toString());
 		}
-		PrintWriter owtPrintWriter = response.getWriter();
-		owtPrintWriter.write(jsonObject2.toString());
+		
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

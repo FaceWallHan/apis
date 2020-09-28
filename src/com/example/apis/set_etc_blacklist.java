@@ -3,9 +3,6 @@ package com.example.apis;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,14 +13,23 @@ import javax.servlet.http.HttpServletResponse;
 import com.example.db.DB;
 import com.example.db.MyUtil;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * Servlet implementation class set_car_move
+ * Servlet implementation class set_etc_blacklist
  */
-@WebServlet("/set_car_move")
-public class set_car_move extends HttpServlet {
+@WebServlet("/set_etc_blacklist")
+public class set_etc_blacklist extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public set_etc_blacklist() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -39,8 +45,7 @@ public class set_car_move extends HttpServlet {
 		String json = reader.readLine();
 		JSONObject jsonobject = JSONObject.fromObject(json);
 		String messageid = jsonobject.getString("UserName");
-		String carId = jsonobject.getString("CarId");
-		String carAction = jsonobject.getString("CarAction");
+		JSONArray jsonArray = jsonobject.getJSONArray("ROWS_DETAIL");
 		String urlString = request.getRequestURL().toString();
 		urlString = urlString.substring(0, urlString.lastIndexOf("/"));
 		System.out.println(urlString);
@@ -48,15 +53,23 @@ public class set_car_move extends HttpServlet {
 		System.out.println(request.getRemoteHost());
 		System.err.println(new MyUtil().simpDate("yyyy-MM-dd HH:mm:ss", new java.util.Date()));
 		reader.close();
-		DB db = new DB();
 		JSONObject jsonObject2 = new JSONObject();
-		int row = db.update("update car_move set CarAction='" + carAction + "' where CarId='" + carId + "'");
-		if (row == 1) {
+		DB db = new DB();
+		try {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject3 = jsonArray.optJSONObject(i);
+				int rwo = db.update("insert into car_black (carid,datetime) values('" + jsonObject3.optString("carid")
+						+ "','" + jsonObject3.optString("datetime") + "')");
+			}
 			jsonObject2.put("RESULT", "S");
 			jsonObject2.put("ERRMSG", "成功");
-		} else {
+
+		} catch (Exception e) {
 			jsonObject2.put("RESULT", "F");
 			jsonObject2.put("ERRMSG", "失败");
+			// TODO: handle exception
+		} finally {
+			db.closed();
 		}
 		PrintWriter owtPrintWriter = response.getWriter();
 		owtPrintWriter.write(jsonObject2.toString());

@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,18 +18,16 @@ import com.example.db.MyUtil;
 import net.sf.json.JSONObject;
 
 /**
- * Servlet implementation class set_car_move
+ * Servlet implementation class set_car_account_recharge
  */
-@WebServlet("/set_car_move")
-public class set_car_move extends HttpServlet {
+@WebServlet("/set_car_account_recharge")
+public class set_car_account_recharge extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -40,7 +37,7 @@ public class set_car_move extends HttpServlet {
 		JSONObject jsonobject = JSONObject.fromObject(json);
 		String messageid = jsonobject.getString("UserName");
 		String carId = jsonobject.getString("CarId");
-		String carAction = jsonobject.getString("CarAction");
+		String money = jsonobject.getString("Money");
 		String urlString = request.getRequestURL().toString();
 		urlString = urlString.substring(0, urlString.lastIndexOf("/"));
 		System.out.println(urlString);
@@ -50,7 +47,7 @@ public class set_car_move extends HttpServlet {
 		reader.close();
 		DB db = new DB();
 		JSONObject jsonObject2 = new JSONObject();
-		int row = db.update("update car_move set CarAction='" + carAction + "' where CarId='" + carId + "'");
+		int row = db.update("update t_vehicle set balance='" + money + "' where number='" + carId + "'");
 		if (row == 1) {
 			jsonObject2.put("RESULT", "S");
 			jsonObject2.put("ERRMSG", "成功");
@@ -63,11 +60,9 @@ public class set_car_move extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
