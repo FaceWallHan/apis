@@ -25,9 +25,11 @@ public class set_car_account_recharge extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -46,8 +48,21 @@ public class set_car_account_recharge extends HttpServlet {
 		System.err.println(new MyUtil().simpDate("yyyy-MM-dd HH:mm:ss", new java.util.Date()));
 		reader.close();
 		DB db = new DB();
+		db.getRs("select * from t_vehicle where number = '" + carId + "'");
+		int nowMoney = 0;
+		ResultSet set = db.getRs();
+		try {
+			if (set != null && set.next()) {
+				nowMoney = set.getInt(4);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		JSONObject jsonObject2 = new JSONObject();
-		int row = db.update("update t_vehicle set balance='" + money + "' where number='" + carId + "'");
+		nowMoney  = nowMoney + Integer.parseInt(money);
+		int row = db.update("update t_vehicle set balance='" + nowMoney + "' where number='" + carId + "'");
 		if (row == 1) {
 			jsonObject2.put("RESULT", "S");
 			jsonObject2.put("ERRMSG", "成功");
@@ -60,9 +75,11 @@ public class set_car_account_recharge extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

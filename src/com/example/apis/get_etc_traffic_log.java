@@ -55,7 +55,7 @@ public class get_etc_traffic_log extends HttpServlet {
 		reader.close();
 		DB db = new DB();
 		JSONObject jsonObject2 = new JSONObject();
-		db.getRs("select * from account_log");
+		db.getRs("select * from traffic_log");
 		ResultSet set = db.getRs();
 		try {
 			if (set != null) {

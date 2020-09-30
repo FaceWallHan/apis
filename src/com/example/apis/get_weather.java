@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +15,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.example.db.MyUtil;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import net.sf.json.JSONObject;
 
@@ -48,9 +52,6 @@ public class get_weather extends HttpServlet {
 	     
 	     PrintWriter out = response.getWriter();
 	     Calendar calendar = Calendar.getInstance();
-	     int year = calendar.get(Calendar.YEAR);
-	     int month = calendar.get(Calendar.MONTH)+1;
-	     int day = calendar.get(Calendar.DAY_OF_MONTH);
 			Random random = new Random();
 			int temperature = random.nextInt(10) + 15;
 		
@@ -61,9 +62,10 @@ public class get_weather extends HttpServlet {
 			List<JSONObject> jsonArray = new ArrayList<>();
 			for (int i = 0; i < 6; i++) {
 				JSONObject jObject2 = new JSONObject();
-				jObject2.put("WData", year+"-"+month+"-"+(day+1));
+				jObject2.put("WData", new MyUtil().simpDate("yyyy-MM-dd",calendar.getTime()));
 				jObject2.put("temperature", random.nextInt(15) + "~" + (random.nextInt(15) + 25));
 				jsonArray.add(jObject2);
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			jObject.put("ROWS_DETAIL", jsonArray);
 			out.write(jObject.toString());

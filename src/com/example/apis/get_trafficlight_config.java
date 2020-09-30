@@ -20,14 +20,14 @@ import net.sf.json.JSONObject;
 /**
  * Servlet implementation class get_trfficligh_config
  */
-@WebServlet("/get_trfficligh_config")
-public class get_trfficligh_config extends HttpServlet {
+@WebServlet("/get_trafficlight_config")
+public class get_trafficlight_config extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor. 
      */
-    public get_trfficligh_config() {
+    public get_trafficlight_config() {
         // TODO Auto-generated constructor stub
     }
 

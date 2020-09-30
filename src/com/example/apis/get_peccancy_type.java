@@ -22,14 +22,14 @@ import net.sf.json.JSONObject;
 /**
  * Servlet implementation class get_peccanct_type
  */
-@WebServlet("/get_peccanct_type")
-public class get_peccanct_type extends HttpServlet {
+@WebServlet("/get_peccancy_type")
+public class get_peccancy_type extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public get_peccanct_type() {
+    public get_peccancy_type() {
         super();
         // TODO Auto-generated constructor stub
     }
